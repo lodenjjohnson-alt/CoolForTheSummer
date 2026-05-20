@@ -4,28 +4,28 @@ import { CheckCircle2, Gift, Lock, Sparkles, Trophy } from "lucide-react";
 const rewardTiers = [
   {
     id: "minor",
-    points: 50,
+    points: 100,
     title: "Minor Reward",
     rank: "Acceptable Operation",
     description: "A small clean reward after crossing the minimum standard.",
   },
   {
     id: "strong",
-    points: 70,
+    points: 140,
     title: "Strong Reward",
     rank: "Strong Operation",
     description: "A better reward earned by completing a serious day of work.",
   },
   {
     id: "elite",
-    points: 85,
+    points: 170,
     title: "Elite Reward",
     rank: "Dominant Operation",
     description: "A high-value reward for an elite day of execution.",
   },
   {
     id: "perfect",
-    points: 100,
+    points: 200,
     title: "Perfect Operation Reward",
     rank: "Perfect Operation",
     description: "The top reward tier. This should stay rare and meaningful.",
