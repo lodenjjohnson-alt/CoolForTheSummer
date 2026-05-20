@@ -5,6 +5,7 @@ import "./index.css";
 import "./discipline.css";
 import "./faith.css";
 import "./experiences.css";
+import "./reflection.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
