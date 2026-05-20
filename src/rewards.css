@@ -88,6 +88,33 @@
   line-height: 1.5;
 }
 
+.reward-suggestions {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 12px;
+}
+
+.reward-suggestions h4 {
+  margin: 0 0 8px;
+  color: #fcd34d;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.reward-suggestions ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
+.reward-suggestions li {
+  color: #fef3c7;
+  line-height: 1.45;
+  font-size: 13px;
+}
+
 .reward-tier-card button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
