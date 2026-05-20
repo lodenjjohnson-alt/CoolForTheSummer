@@ -216,6 +216,16 @@ export default function App() {
       );
     }}
   />
+) : activeModule === "school" ? (
+  <SchoolModule
+    onSave={() => {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === 3 ? { ...task, done: true } : task
+        )
+      );
+    }}
+  />
 ) : (
   <p className="muted">
     This module shell is ready. Next, build this tracker as its own
