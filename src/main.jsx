@@ -8,6 +8,7 @@ import "./experiences.css";
 import "./reflection.css";
 import "./operationArchive.css";
 import "./rewards.css";
+import "./modernTheme.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
