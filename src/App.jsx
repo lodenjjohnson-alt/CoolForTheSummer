@@ -1,3 +1,4 @@
+import FitnessModule from "./modules/FitnessModule.jsx";
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -186,10 +187,22 @@ export default function App() {
               </div>
             </div>
 
-            <p className="muted">
-              This is the clean deployable shell. Next, each tracker becomes its
-              own separate file.
-            </p>
+{activeModule === "fitness" ? (
+  <FitnessModule
+    onSave={() => {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === 1 ? { ...task, done: true } : task
+        )
+      );
+    }}
+  />
+) : (
+  <p className="muted">
+    This module shell is ready. Next, build this tracker as its own
+    separate file.
+  </p>
+)}
           </div>
         </section>
 
