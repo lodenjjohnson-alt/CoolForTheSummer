@@ -28,6 +28,7 @@ import FaithModule from "./modules/FaithModule.jsx";
 import ExperiencesModule from "./modules/ExperiencesModule.jsx";
 import ReflectionModule from "./modules/ReflectionModule.jsx";
 import RewardsPanel from "./components/RewardsPanel.jsx";
+import BackupPanel from "./components/BackupPanel.jsx";
 
 const DAILY_MISSION_STORAGE_KEY = "summer-os-daily-mission-state";
 const OPERATION_ARCHIVE_STORAGE_KEY = "summer-os-operation-archive";
@@ -610,6 +611,8 @@ export default function App() {
           )}
         </section>
 
+        <BackupPanel />
+
         <section className="panel">
           <div className="section-title">
             <Archive size={24} />
@@ -617,7 +620,7 @@ export default function App() {
           </div>
 
           <p className="muted">
-            Persistent XP active. Modern dashboard theme active. Daily goals are locked to module logs. Completed goals: {completed}/{tasks.length}.
+            Backup system active. Persistent XP active. Modern dashboard theme active. Daily goals are locked to module logs. Completed goals: {completed}/{tasks.length}.
           </p>
         </section>
       </main>
