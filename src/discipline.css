@@ -1,0 +1,199 @@
+.discipline-module {
+  margin-top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.discipline-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.3fr) minmax(280px, 0.7fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.discipline-card {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.discipline-card-header {
+  border-bottom: 1px solid #292524;
+  padding-bottom: 10px;
+}
+
+.discipline-card-header p {
+  margin: 0 0 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(253, 230, 138, 0.7);
+}
+
+.discipline-card-header h3 {
+  margin: 0;
+  color: #fcd34d;
+  text-transform: uppercase;
+}
+
+.discipline-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.discipline-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.discipline-form label span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(253, 230, 138, 0.75);
+}
+
+.discipline-form input,
+.discipline-form textarea,
+.discipline-form select {
+  width: 100%;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fde68a;
+  padding: 11px;
+  outline: none;
+}
+
+.discipline-form textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.discipline-form input:focus,
+.discipline-form textarea:focus,
+.discipline-form select:focus {
+  border-color: #fcd34d;
+}
+
+.discipline-pattern-list {
+  display: grid;
+  gap: 10px;
+}
+
+.discipline-pattern-row {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 10px;
+}
+
+.discipline-pattern-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.discipline-pattern-top strong {
+  color: #fcd34d;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.discipline-pattern-top span {
+  color: rgba(253, 230, 138, 0.8);
+  font-size: 12px;
+}
+
+.discipline-pattern-bar {
+  height: 8px;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.discipline-pattern-bar div {
+  height: 100%;
+  background: #fcd34d;
+}
+
+.discipline-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.discipline-result-card {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 10px;
+}
+
+.discipline-result-card span {
+  display: block;
+  color: rgba(253, 230, 138, 0.7);
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.discipline-result-card strong {
+  display: block;
+  color: #fcd34d;
+  font-size: 24px;
+  margin-top: 4px;
+}
+
+.discipline-log-list {
+  display: grid;
+  gap: 10px;
+}
+
+.discipline-log {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 14px;
+}
+
+.discipline-log-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #292524;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.discipline-log-header strong {
+  display: block;
+  color: #fcd34d;
+  text-transform: uppercase;
+}
+
+.discipline-log-header span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 13px;
+}
+
+.discipline-log p {
+  margin: 8px 0 0;
+  color: #fef3c7;
+  line-height: 1.5;
+}
+
+.discipline-log p span {
+  color: #fcd34d;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+@media (max-width: 950px) {
+  .discipline-layout,
+  .discipline-form,
+  .discipline-result-grid {
+    grid-template-columns: 1fr;
+  }
+}
