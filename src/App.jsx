@@ -1,3 +1,4 @@
+import SchoolModule from "./modules/SchoolModule.jsx";
 import HockeyModule from "./modules/HockeyModule.jsx";
 function getLocalDateString(date = new Date()) {
   const year = date.getFullYear();
