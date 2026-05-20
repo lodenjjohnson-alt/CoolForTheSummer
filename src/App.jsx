@@ -135,15 +135,6 @@ export default function App() {
     }));
   }
 
-  function toggleTask(id) {
-    setMissionState((prev) => ({
-      ...prev,
-      tasks: prev.tasks.map((task) =>
-        task.id === id ? { ...task, done: !task.done } : task
-      ),
-    }));
-  }
-
   function renderActiveModule() {
     const onSave = () => completeTask(active.taskId);
 
@@ -256,14 +247,14 @@ export default function App() {
 
             <div className="task-grid">
               {tasks.map((task) => (
-                <button
+                <div
                   key={task.id}
-                  onClick={() => toggleTask(task.id)}
                   className={`task ${task.done ? "complete" : ""}`}
+                  aria-label={`${task.label}: ${task.done ? "complete" : "incomplete"}`}
                 >
                   <strong>{task.label}</strong>
-                  <span>{task.points} points</span>
-                </button>
+                  <span>{task.done ? "Logged" : "Requires module log"} · {task.points} points</span>
+                </div>
               ))}
             </div>
           </div>
@@ -290,7 +281,7 @@ export default function App() {
           </div>
 
           <p className="muted">
-            Daily mission persistence active. Completed objectives: {completed}/{tasks.length}. Checklist resets automatically on a new local date.
+            Daily mission tasks are locked to module logs. Completed objectives: {completed}/{tasks.length}. Checklist resets automatically on a new local date.
           </p>
         </section>
       </main>
