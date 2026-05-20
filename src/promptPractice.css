@@ -1,0 +1,215 @@
+.standalone-prompt-practice-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto 48px;
+}
+
+.prompt-practice-module {
+  display: grid;
+  gap: 18px;
+}
+
+.prompt-practice-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+  gap: 18px;
+}
+
+.prompt-practice-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.74);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.26);
+}
+
+.prompt-practice-main {
+  min-height: 420px;
+}
+
+.prompt-practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.prompt-practice-header p {
+  margin: 0 0 4px;
+  color: rgba(226, 232, 240, 0.58);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prompt-practice-header h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.18rem;
+}
+
+.prompt-practice-header > span {
+  color: rgba(226, 232, 240, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+}
+
+.generated-prompt {
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.14), rgba(99, 102, 241, 0.1));
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.generated-prompt p {
+  margin: 0;
+  color: #f8fafc;
+  line-height: 1.55;
+  font-size: 1.02rem;
+}
+
+.response-standard {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  color: rgba(226, 232, 240, 0.74);
+}
+
+.response-standard span {
+  color: rgba(148, 163, 184, 0.95);
+}
+
+.response-standard strong {
+  color: #e2e8f0;
+}
+
+.prompt-practice-form {
+  display: grid;
+  gap: 14px;
+}
+
+.prompt-practice-form label {
+  display: grid;
+  gap: 8px;
+  color: rgba(226, 232, 240, 0.78);
+  font-size: 0.86rem;
+}
+
+.prompt-practice-form textarea,
+.prompt-practice-form input,
+.prompt-practice-form select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(2, 6, 23, 0.56);
+  color: #f8fafc;
+  padding: 12px 13px;
+  outline: none;
+}
+
+.prompt-practice-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.prompt-practice-form textarea:focus,
+.prompt-practice-form input:focus,
+.prompt-practice-form select:focus {
+  border-color: rgba(56, 189, 248, 0.55);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+}
+
+.prompt-practice-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.4fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.prompt-practice-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 14px 0;
+  color: rgba(148, 163, 184, 0.9);
+  font-size: 0.82rem;
+}
+
+.prompt-log-list {
+  display: grid;
+  gap: 10px;
+  max-height: 420px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.prompt-log-button {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(2, 6, 23, 0.42);
+  color: #e2e8f0;
+  border-radius: 16px;
+  padding: 12px;
+  text-align: left;
+  display: grid;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.prompt-log-button.selected,
+.prompt-log-button:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  background: rgba(14, 165, 233, 0.12);
+}
+
+.prompt-log-button span {
+  color: rgba(148, 163, 184, 0.9);
+  font-size: 0.8rem;
+}
+
+.prompt-log-detail {
+  display: grid;
+  gap: 12px;
+  color: rgba(226, 232, 240, 0.86);
+  line-height: 1.55;
+}
+
+.prompt-log-detail p {
+  margin: 0;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(2, 6, 23, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.prompt-log-detail span {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.prompt-log-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.module-actions.compact {
+  margin-top: 14px;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 860px) {
+  .prompt-practice-layout,
+  .prompt-practice-row {
+    grid-template-columns: 1fr;
+  }
+
+  .standalone-prompt-practice-shell {
+    width: min(100% - 20px, 1180px);
+  }
+}
