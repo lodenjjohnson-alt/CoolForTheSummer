@@ -47,27 +47,27 @@ function makeId(prefix = "operation") {
 }
 
 const modules = [
-  { key: "fitness", taskId: 1, title: "Fitness Tracker", code: "FIT-01", icon: Dumbbell },
-  { key: "hockey", taskId: 2, title: "Hockey Tracker", code: "HKY-02", icon: Shield },
-  { key: "school", taskId: 3, title: "Summer School", code: "SCH-03", icon: GraduationCap },
-  { key: "learning", taskId: 4, title: "Learning Tracker", code: "INT-04", icon: BookOpen },
-  { key: "skills", taskId: 5, title: "Skill Tree", code: "SKL-05", icon: Brain },
-  { key: "discipline", taskId: 6, title: "Discipline Tracker", code: "DSC-06", icon: Flame },
-  { key: "faith", taskId: 7, title: "Faith Tracker", code: "FTH-07", icon: Cross },
-  { key: "experiences", taskId: 8, title: "Experiences", code: "FLD-08", icon: Map },
-  { key: "reflection", taskId: 9, title: "Nightly Reflection", code: "AAR-09", icon: Moon },
+  { key: "fitness", taskId: 1, title: "Fitness", code: "Fit", icon: Dumbbell },
+  { key: "hockey", taskId: 2, title: "Hockey", code: "Hockey", icon: Shield },
+  { key: "school", taskId: 3, title: "Summer School", code: "School", icon: GraduationCap },
+  { key: "learning", taskId: 4, title: "Learning", code: "Learn", icon: BookOpen },
+  { key: "skills", taskId: 5, title: "Skill Tree", code: "Skills", icon: Brain },
+  { key: "discipline", taskId: 6, title: "Discipline", code: "Discipline", icon: Flame },
+  { key: "faith", taskId: 7, title: "Faith", code: "Faith", icon: Cross },
+  { key: "experiences", taskId: 8, title: "Experiences", code: "Experiences", icon: Map },
+  { key: "reflection", taskId: 9, title: "Nightly Reflection", code: "Reflect", icon: Moon },
 ];
 
 const initialTasks = [
-  { id: 1, label: "Execute fitness training", points: 12, done: false },
-  { id: 2, label: "Submit hockey development report", points: 12, done: false },
-  { id: 3, label: "Complete summer school objective", points: 10, done: false },
-  { id: 4, label: "Complete intelligence study block", points: 8, done: false },
-  { id: 5, label: "Advance one skill asset", points: 8, done: false },
-  { id: 6, label: "Win discipline checkpoint", points: 15, done: false },
-  { id: 7, label: "Complete faith formation block", points: 10, done: false },
-  { id: 8, label: "Complete field experience", points: 10, done: false },
-  { id: 9, label: "File nightly after-action report", points: 15, done: false },
+  { id: 1, label: "Log fitness training", points: 12, done: false },
+  { id: 2, label: "Log hockey development", points: 12, done: false },
+  { id: 3, label: "Complete summer school work", points: 10, done: false },
+  { id: 4, label: "Complete learning block", points: 8, done: false },
+  { id: 5, label: "Advance one skill", points: 8, done: false },
+  { id: 6, label: "Log discipline checkpoint", points: 15, done: false },
+  { id: 7, label: "Complete faith reflection", points: 10, done: false },
+  { id: 8, label: "Complete an experience", points: 10, done: false },
+  { id: 9, label: "Submit nightly reflection", points: 15, done: false },
 ];
 
 function makeFreshTasks() {
@@ -96,10 +96,10 @@ function calculateScore(tasks) {
 }
 
 function getStatus(score) {
-  if (score >= 85) return "Dominant";
+  if (score >= 85) return "Elite";
   if (score >= 70) return "Strong";
-  if (score >= 50) return "Acceptable";
-  return "Correction Required";
+  if (score >= 50) return "On Track";
+  return "Needs Attention";
 }
 
 function makeOperationSnapshot(missionState, source = "manual") {
@@ -187,7 +187,7 @@ export default function App() {
         if (prev.date === today) return prev;
 
         if (shouldAutoArchive(prev)) {
-          const snapshot = makeOperationSnapshot(prev, "automatic rollover");
+          const snapshot = makeOperationSnapshot(prev, "automatic day rollover");
           setOperationArchive((archive) => [snapshot, ...archive].slice(0, MAX_ARCHIVED_OPERATIONS));
         }
 
@@ -244,12 +244,12 @@ export default function App() {
 
   function startNewOperation() {
     const confirmed = window.confirm(
-      "Archive the current operation and start a new operation? This resets today's mission checklist and reward claims."
+      "Save today to the archive and start a new day? This resets today's checklist and reward claims."
     );
     if (!confirmed) return;
 
     setMissionState((prev) => {
-      const snapshot = makeOperationSnapshot(prev, "manual start new operation");
+      const snapshot = makeOperationSnapshot(prev, "manual new day");
       setOperationArchive((archive) => [snapshot, ...archive].slice(0, MAX_ARCHIVED_OPERATIONS));
       setSelectedOperationId(snapshot.id);
       return makeFreshMissionState(getLocalDateString());
@@ -257,7 +257,7 @@ export default function App() {
   }
 
   function deleteArchivedOperation(operationId) {
-    const confirmed = window.confirm("Delete this archived operation?");
+    const confirmed = window.confirm("Delete this archived day?");
     if (!confirmed) return;
 
     setOperationArchive((archive) => archive.filter((operation) => operation.id !== operationId));
@@ -265,7 +265,7 @@ export default function App() {
   }
 
   function clearOperationArchive() {
-    const confirmed = window.confirm("Clear the entire operation archive?");
+    const confirmed = window.confirm("Clear the entire daily archive?");
     if (!confirmed) return;
 
     setOperationArchive([]);
@@ -287,7 +287,7 @@ export default function App() {
 
     return (
       <p className="muted">
-        This module shell is ready. Next, build this tracker as its own separate file.
+        This section is ready to be built out.
       </p>
     );
   }
@@ -298,15 +298,15 @@ export default function App() {
         <button
           className="overlay"
           onClick={() => setSidebarOpen(false)}
-          aria-label="Close command rail"
+          aria-label="Close navigation"
         />
       )}
 
       <aside className={`command-rail ${sidebarOpen ? "open" : ""}`}>
         <div className="rail-header">
           <div>
-            <p className="eyebrow">Module Select</p>
-            <h2>Command Rail</h2>
+            <p className="eyebrow">Navigation</p>
+            <h2>Menu</h2>
           </div>
 
           <button className="icon-button" onClick={() => setSidebarOpen(false)}>
@@ -343,7 +343,7 @@ export default function App() {
         <button
           className="pull-tab"
           onClick={() => setSidebarOpen(true)}
-          aria-label="Open command rail"
+          aria-label="Open navigation"
         >
           <span />
           <span />
@@ -356,7 +356,7 @@ export default function App() {
           <div>
             <div className="interface-label">
               <Radio size={16} />
-              Active Command Interface
+              Personal Dashboard
             </div>
 
             <motion.h1 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
@@ -367,12 +367,12 @@ export default function App() {
 
             <p className="date-line">
               <CalendarDays size={16} />
-              Operation Date: {operationDate}
+              Today: {operationDate}
             </p>
           </div>
 
           <div className="score-card">
-            <p>Readiness Score</p>
+            <p>Daily Score</p>
             <strong>{score}</strong>
             <span>{getStatus(score)}</span>
           </div>
@@ -380,7 +380,7 @@ export default function App() {
 
         <section className="grid">
           <div className="panel wide">
-            <h2>Today's Mission</h2>
+            <h2>Today’s Goals</h2>
 
             <div className="task-grid">
               {tasks.map((task) => (
@@ -390,14 +390,14 @@ export default function App() {
                   aria-label={`${task.label}: ${task.done ? "complete" : "incomplete"}`}
                 >
                   <strong>{task.label}</strong>
-                  <span>{task.done ? "Logged" : "Requires module log"} · {task.points} points</span>
+                  <span>{task.done ? "Logged" : "Requires log"} · {task.points} points</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="panel">
-            <h2>Active Module</h2>
+            <h2>Active Section</h2>
 
             <div className="active-module">
               <ActiveIcon size={30} />
@@ -420,17 +420,17 @@ export default function App() {
         <section className="panel operation-control-panel">
           <div className="section-title">
             <Archive size={24} />
-            <h2>Operation Control</h2>
+            <h2>Day Control</h2>
           </div>
 
           <p className="muted">
-            Archive the current mission board and reset the daily checklist when you want to begin a new operation.
+            Save the current day to your archive and reset the checklist when you are ready to begin fresh.
           </p>
 
           <div className="module-actions">
             <button className="primary-action" onClick={startNewOperation}>
               <RefreshCw size={18} />
-              Start New Operation
+              Start New Day
             </button>
 
             <button className="secondary-action" onClick={clearOperationArchive}>
@@ -442,11 +442,11 @@ export default function App() {
         <section className="panel operation-archive-panel">
           <div className="section-title">
             <Archive size={24} />
-            <h2>Operation Archive</h2>
+            <h2>Daily Archive</h2>
           </div>
 
           {operationArchive.length === 0 ? (
-            <p className="muted">No archived operations yet.</p>
+            <p className="muted">No saved days yet.</p>
           ) : (
             <div className="operation-archive-layout">
               <div className="operation-archive-list">
@@ -458,7 +458,7 @@ export default function App() {
                   >
                     <strong>{operation.date}</strong>
                     <span>{operation.score} pts · {operation.status}</span>
-                    <small>{operation.completedCount}/{operation.totalCount} missions</small>
+                    <small>{operation.completedCount}/{operation.totalCount} goals</small>
                   </button>
                 ))}
               </div>
@@ -467,7 +467,7 @@ export default function App() {
                 <div className="operation-archive-detail">
                   <div className="operation-archive-detail-header">
                     <div>
-                      <p>Archived Operation</p>
+                      <p>Saved Day</p>
                       <h3>{selectedOperation.date}</h3>
                       <span>{selectedOperation.archivedAt} · {selectedOperation.source}</span>
                     </div>
@@ -475,7 +475,7 @@ export default function App() {
                     <button
                       className="danger-action small"
                       onClick={() => deleteArchivedOperation(selectedOperation.id)}
-                      aria-label="Delete archived operation"
+                      aria-label="Delete saved day"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -498,7 +498,7 @@ export default function App() {
 
                   <div className="operation-task-columns">
                     <div>
-                      <h4>Completed Missions</h4>
+                      <h4>Completed Goals</h4>
                       {selectedOperation.completedTasks.length === 0 ? (
                         <p className="muted">None completed.</p>
                       ) : (
@@ -509,9 +509,9 @@ export default function App() {
                     </div>
 
                     <div>
-                      <h4>Missed Missions</h4>
+                      <h4>Missed Goals</h4>
                       {selectedOperation.missedTasks.length === 0 ? (
-                        <p className="muted">No missed missions.</p>
+                        <p className="muted">No missed goals.</p>
                       ) : (
                         selectedOperation.missedTasks.map((task) => (
                           <p key={task.id} className="operation-task-line missed">{task.label}</p>
@@ -532,7 +532,7 @@ export default function App() {
           </div>
 
           <p className="muted">
-            Rewards system active. Operation archive active. Daily mission tasks are locked to module logs. Completed objectives: {completed}/{tasks.length}.
+            Modern dashboard theme active. Daily goals are locked to module logs. Completed goals: {completed}/{tasks.length}.
           </p>
         </section>
       </main>
