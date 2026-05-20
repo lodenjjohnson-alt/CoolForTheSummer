@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Archive,
@@ -24,6 +24,8 @@ import DisciplineModule from "./modules/DisciplineModule.jsx";
 import FaithModule from "./modules/FaithModule.jsx";
 import ExperiencesModule from "./modules/ExperiencesModule.jsx";
 import ReflectionModule from "./modules/ReflectionModule.jsx";
+
+const DAILY_MISSION_STORAGE_KEY = "summer-os-daily-mission-state";
 
 function getLocalDateString(date = new Date()) {
   const year = date.getFullYear();
@@ -56,6 +58,33 @@ const initialTasks = [
   { id: 9, label: "File nightly after-action report", points: 15, done: false },
 ];
 
+function makeFreshTasks() {
+  return initialTasks.map((task) => ({ ...task, done: false }));
+}
+
+function loadDailyMissionState() {
+  const today = getLocalDateString();
+
+  try {
+    const raw = localStorage.getItem(DAILY_MISSION_STORAGE_KEY);
+    if (!raw) return { date: today, tasks: makeFreshTasks() };
+
+    const parsed = JSON.parse(raw);
+    if (parsed?.date !== today || !Array.isArray(parsed?.tasks)) {
+      return { date: today, tasks: makeFreshTasks() };
+    }
+
+    const mergedTasks = initialTasks.map((task) => {
+      const savedTask = parsed.tasks.find((item) => item.id === task.id);
+      return { ...task, done: Boolean(savedTask?.done) };
+    });
+
+    return { date: today, tasks: mergedTasks };
+  } catch {
+    return { date: today, tasks: makeFreshTasks() };
+  }
+}
+
 function getStatus(score) {
   if (score >= 85) return "Dominant";
   if (score >= 70) return "Strong";
@@ -66,7 +95,28 @@ function getStatus(score) {
 export default function App() {
   const [activeModule, setActiveModule] = useState("fitness");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [tasks, setTasks] = useState(initialTasks);
+  const [missionState, setMissionState] = useState(() => loadDailyMissionState());
+
+  const tasks = missionState.tasks;
+  const operationDate = missionState.date;
+
+  useEffect(() => {
+    localStorage.setItem(DAILY_MISSION_STORAGE_KEY, JSON.stringify(missionState));
+  }, [missionState]);
+
+  useEffect(() => {
+    function resetIfDateChanged() {
+      const today = getLocalDateString();
+      setMissionState((prev) => {
+        if (prev.date === today) return prev;
+        return { date: today, tasks: makeFreshTasks() };
+      });
+    }
+
+    resetIfDateChanged();
+    const intervalId = window.setInterval(resetIfDateChanged, 60 * 1000);
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   const score = useMemo(() => {
     return tasks.reduce((total, task) => total + (task.done ? task.points : 0), 0);
@@ -77,15 +127,21 @@ export default function App() {
   const ActiveIcon = active.icon;
 
   function completeTask(taskId) {
-    setTasks((prev) =>
-      prev.map((task) => (task.id === taskId ? { ...task, done: true } : task))
-    );
+    setMissionState((prev) => ({
+      ...prev,
+      tasks: prev.tasks.map((task) =>
+        task.id === taskId ? { ...task, done: true } : task
+      ),
+    }));
   }
 
   function toggleTask(id) {
-    setTasks((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, done: !task.done } : task))
-    );
+    setMissionState((prev) => ({
+      ...prev,
+      tasks: prev.tasks.map((task) =>
+        task.id === id ? { ...task, done: !task.done } : task
+      ),
+    }));
   }
 
   function renderActiveModule() {
@@ -183,7 +239,7 @@ export default function App() {
 
             <p className="date-line">
               <CalendarDays size={16} />
-              Operation Date: {getLocalDateString()}
+              Operation Date: {operationDate}
             </p>
           </div>
 
@@ -234,7 +290,7 @@ export default function App() {
           </div>
 
           <p className="muted">
-            Modular build active. Completed objectives: {completed}/{tasks.length}
+            Daily mission persistence active. Completed objectives: {completed}/{tasks.length}. Checklist resets automatically on a new local date.
           </p>
         </section>
       </main>
