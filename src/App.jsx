@@ -1,15 +1,3 @@
-import SkillTreeModule from "./modules/SkillTreeModule.jsx";
-import LearningModule from "./modules/LearningModule.jsx";
-import SchoolModule from "./modules/SchoolModule.jsx";
-import HockeyModule from "./modules/HockeyModule.jsx";
-function getLocalDateString(date = new Date()) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-import FitnessModule from "./modules/FitnessModule.jsx";
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -27,17 +15,30 @@ import {
   Radio,
   Shield,
 } from "lucide-react";
+import FitnessModule from "./modules/FitnessModule.jsx";
+import HockeyModule from "./modules/HockeyModule.jsx";
+import SchoolModule from "./modules/SchoolModule.jsx";
+import LearningModule from "./modules/LearningModule.jsx";
+import SkillTreeModule from "./modules/SkillTreeModule.jsx";
+import DisciplineModule from "./modules/DisciplineModule.jsx";
+
+function getLocalDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 const modules = [
-  { key: "fitness", title: "Fitness Tracker", code: "FIT-01", icon: Dumbbell },
-  { key: "hockey", title: "Hockey Tracker", code: "HKY-02", icon: Shield },
-  { key: "school", title: "Summer School", code: "SCH-03", icon: GraduationCap },
-  { key: "learning", title: "Learning Tracker", code: "INT-04", icon: BookOpen },
-  { key: "skills", title: "Skill Tree", code: "SKL-05", icon: Brain },
-  { key: "discipline", title: "Discipline Tracker", code: "DSC-06", icon: Flame },
-  { key: "faith", title: "Faith Tracker", code: "FTH-07", icon: Cross },
-  { key: "experiences", title: "Experiences", code: "FLD-08", icon: Map },
-  { key: "reflection", title: "Nightly Reflection", code: "AAR-09", icon: Moon },
+  { key: "fitness", taskId: 1, title: "Fitness Tracker", code: "FIT-01", icon: Dumbbell },
+  { key: "hockey", taskId: 2, title: "Hockey Tracker", code: "HKY-02", icon: Shield },
+  { key: "school", taskId: 3, title: "Summer School", code: "SCH-03", icon: GraduationCap },
+  { key: "learning", taskId: 4, title: "Learning Tracker", code: "INT-04", icon: BookOpen },
+  { key: "skills", taskId: 5, title: "Skill Tree", code: "SKL-05", icon: Brain },
+  { key: "discipline", taskId: 6, title: "Discipline Tracker", code: "DSC-06", icon: Flame },
+  { key: "faith", taskId: 7, title: "Faith Tracker", code: "FTH-07", icon: Cross },
+  { key: "experiences", taskId: 8, title: "Experiences", code: "FLD-08", icon: Map },
+  { key: "reflection", taskId: 9, title: "Nightly Reflection", code: "AAR-09", icon: Moon },
 ];
 
 const initialTasks = [
@@ -72,11 +73,32 @@ export default function App() {
   const active = modules.find((module) => module.key === activeModule) ?? modules[0];
   const ActiveIcon = active.icon;
 
+  function completeTask(taskId) {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === taskId ? { ...task, done: true } : task))
+    );
+  }
+
   function toggleTask(id) {
     setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, done: !task.done } : task
-      )
+      prev.map((task) => (task.id === id ? { ...task, done: !task.done } : task))
+    );
+  }
+
+  function renderActiveModule() {
+    const onSave = () => completeTask(active.taskId);
+
+    if (activeModule === "fitness") return <FitnessModule onSave={onSave} />;
+    if (activeModule === "hockey") return <HockeyModule onSave={onSave} />;
+    if (activeModule === "school") return <SchoolModule onSave={onSave} />;
+    if (activeModule === "learning") return <LearningModule onSave={onSave} />;
+    if (activeModule === "skills") return <SkillTreeModule onSave={onSave} />;
+    if (activeModule === "discipline") return <DisciplineModule onSave={onSave} />;
+
+    return (
+      <p className="muted">
+        This module shell is ready. Next, build this tracker as its own separate file.
+      </p>
     );
   }
 
@@ -147,10 +169,7 @@ export default function App() {
               Active Command Interface
             </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
+            <motion.h1 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
               Summer OS
             </motion.h1>
 
@@ -158,7 +177,7 @@ export default function App() {
 
             <p className="date-line">
               <CalendarDays size={16} />
-             Operation Date: {getLocalDateString()}
+              Operation Date: {getLocalDateString()}
             </p>
           </div>
 
@@ -198,78 +217,18 @@ export default function App() {
               </div>
             </div>
 
-{activeModule === "fitness" ? (
-  <FitnessModule
-    onSave={() => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === 1 ? { ...task, done: true } : task
-        )
-      );
-    }}
-  />
-) : activeModule === "hockey" ? (
-  <HockeyModule
-    onSave={() => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === 2 ? { ...task, done: true } : task
-        )
-      );
-    }}
-  />
-) : activeModule === "school" ? (
-  <SchoolModule
-    onSave={() => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === 3 ? { ...task, done: true } : task
-        )
-      );
-    }}
-  />
-) : activeModule === "learning" ? (
-  <LearningModule
-    onSave={() => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === 4 ? { ...task, done: true } : task
-        )
-      );
-    }}
-  />
-) : activeModule === "skills" ? (
-  <SkillTreeModule
-    onSave={() => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === 5 ? { ...task, done: true } : task
-        )
-      );
-    }}
-  />
-) : (
-  <p className="muted">
-    This module shell is ready. Next, build this tracker as its own
-    separate file.
-  </p>
-)}
+            {renderActiveModule()}
           </div>
         </section>
 
         <section className="panel">
           <div className="section-title">
             <Archive size={24} />
-            <h2>Next Build Step</h2>
+            <h2>Build Status</h2>
           </div>
 
           <p className="muted">
-            Once this deploys successfully, create{" "}
-            <strong>src/modules/FitnessModule.jsx</strong>.
-          </p>
-
-          <p className="muted">
-            Completed objectives: {completed}/{tasks.length}
+            Modular build active. Completed objectives: {completed}/{tasks.length}
           </p>
         </section>
       </main>
