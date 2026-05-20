@@ -1,0 +1,394 @@
+:root {
+  --bg: #070a12;
+  --surface: rgba(15, 23, 42, 0.78);
+  --surface-strong: rgba(17, 24, 39, 0.94);
+  --surface-soft: rgba(30, 41, 59, 0.5);
+  --border: rgba(148, 163, 184, 0.16);
+  --border-strong: rgba(148, 163, 184, 0.28);
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-2: #a78bfa;
+  --success: #34d399;
+  --danger: #fb7185;
+  --warning: #fbbf24;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+}
+
+body {
+  background: var(--bg);
+}
+
+.app {
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 34%),
+    radial-gradient(circle at top right, rgba(167, 139, 250, 0.14), transparent 30%),
+    linear-gradient(135deg, #070a12 0%, #0f172a 48%, #111827 100%);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+.shell {
+  max-width: 1320px;
+}
+
+.hero,
+.panel,
+.score-card,
+.command-rail,
+.module-button,
+.active-module,
+.task,
+.mini-stat,
+.fitness-log,
+.hockey-log,
+.school-card,
+.class-list,
+.assignment-card,
+.learning-log,
+.skill-panel,
+.skill-card,
+.skill-row,
+.discipline-card,
+.faith-card,
+.experiences-card,
+.experience-card,
+.reflection-card,
+.reward-tier-card,
+.claimed-reward-history,
+.operation-archive-detail,
+.operation-archive-button {
+  border-color: var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  background: var(--surface) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.hero {
+  border-radius: var(--radius-lg) !important;
+  padding: 28px;
+  align-items: center;
+}
+
+.hero h1 {
+  color: var(--text);
+  letter-spacing: -0.07em;
+  text-transform: none;
+}
+
+.slogan {
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 18px;
+}
+
+.interface-label,
+.date-line,
+.eyebrow,
+.panel h2,
+.section-title h2,
+.rail-header h2,
+.recent-logs h3,
+.school-card h3,
+.learning-breakdown h3,
+.learning-categories-reference h3,
+.skill-panel-header h3,
+.discipline-card-header h3,
+.faith-card-header h3,
+.experiences-card-header h3,
+.reflection-card-header h3,
+.reward-tier-header h3,
+.claimed-reward-history h3,
+.operation-archive-detail-header h3 {
+  color: var(--text) !important;
+}
+
+.interface-label,
+.eyebrow,
+.date-line,
+.module-button p,
+.active-module p,
+.mini-stat span,
+.task span,
+.reward-tier-header p,
+.operation-archive-detail-header p,
+.discipline-card-header p,
+.faith-card-header p,
+.experiences-card-header p,
+.reflection-card-header p,
+.skill-panel-header p {
+  color: var(--muted) !important;
+  letter-spacing: 0.08em !important;
+}
+
+.score-card {
+  border: 1px solid rgba(56, 189, 248, 0.32) !important;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(167, 139, 250, 0.12)) !important;
+}
+
+.score-card strong {
+  color: var(--text) !important;
+}
+
+.score-card span {
+  color: var(--accent) !important;
+}
+
+.command-rail {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0 !important;
+}
+
+.rail-header,
+.skill-panel-header,
+.discipline-card-header,
+.faith-card-header,
+.experiences-card-header,
+.reflection-card-header,
+.reward-tier-header,
+.operation-archive-detail-header,
+.fitness-log-header,
+.hockey-log-header,
+.learning-log-header,
+.skill-log-header,
+.discipline-log-header,
+.faith-log-header,
+.experience-log-header,
+.assignment-header,
+.selected-class-header {
+  border-color: var(--border) !important;
+}
+
+.module-button,
+.class-file-button,
+.operation-archive-button,
+.reflection-archive-button {
+  box-shadow: none;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.module-button:hover,
+.class-file-button:hover,
+.operation-archive-button:hover,
+.reflection-archive-button:hover,
+.task:hover,
+.reward-tier-card:hover,
+.experience-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, 0.38) !important;
+}
+
+.module-button.selected,
+.class-file-button.selected,
+.operation-archive-button.selected,
+.reflection-archive-button.selected,
+.task.complete,
+.reward-tier-card.unlocked,
+.reward-tier-card.claimed,
+.experience-card.completed {
+  border-color: rgba(56, 189, 248, 0.48) !important;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.13), rgba(167, 139, 250, 0.1)) !important;
+}
+
+.module-button strong,
+.active-module strong,
+.task strong,
+.mini-stat strong,
+.fitness-log-header strong,
+.hockey-log-header strong,
+.learning-log-header strong,
+.skill-row-top strong,
+.discipline-log-header strong,
+.faith-log-header strong,
+.experience-log-header strong,
+.operation-archive-button strong,
+.operation-score-grid strong,
+.claimed-reward-row strong,
+.reward-tier-header h3,
+.training-type-card strong,
+.learning-category-card strong,
+.discipline-result-card strong,
+.skill-rank {
+  color: var(--text) !important;
+}
+
+.muted,
+.fitness-log-grid p,
+.hockey-log-grid p,
+.learning-log-grid p,
+.skill-main p,
+.discipline-log p,
+.faith-log p,
+.experience-log p,
+.reflection-log p,
+.reward-description,
+.learning-note,
+.log-notes,
+.assignment-notes,
+.class-notes {
+  color: var(--muted) !important;
+}
+
+.primary-action,
+.secondary-action,
+.icon-button,
+.danger-action,
+.pull-tab {
+  border-radius: var(--radius-sm) !important;
+  transition: transform 160ms ease, filter 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.primary-action {
+  border: 1px solid rgba(56, 189, 248, 0.55) !important;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
+  color: #020617 !important;
+}
+
+.secondary-action,
+.icon-button {
+  border: 1px solid var(--border-strong) !important;
+  background: rgba(15, 23, 42, 0.7) !important;
+  color: var(--text) !important;
+}
+
+.danger-action {
+  border-color: rgba(251, 113, 133, 0.5) !important;
+  background: rgba(251, 113, 133, 0.1) !important;
+  color: #fecdd3 !important;
+}
+
+.primary-action:hover,
+.secondary-action:hover,
+.icon-button:hover,
+.danger-action:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+input,
+textarea,
+select,
+.fitness-form input,
+.fitness-form textarea,
+.hockey-form input,
+.hockey-form textarea,
+.hockey-form select,
+.school-form input,
+.school-form textarea,
+.school-form select,
+.learning-form input,
+.learning-form textarea,
+.learning-form select,
+.skill-form input,
+.skill-form textarea,
+.skill-form select,
+.discipline-form input,
+.discipline-form textarea,
+.discipline-form select,
+.faith-form input,
+.faith-form textarea,
+.faith-form select,
+.experiences-form textarea,
+.experiences-form select,
+.reflection-form input,
+.reflection-form textarea,
+.experience-card textarea {
+  border-color: var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  background: rgba(2, 6, 23, 0.45) !important;
+  color: var(--text) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.fitness-form input:focus,
+.fitness-form textarea:focus,
+.hockey-form input:focus,
+.hockey-form textarea:focus,
+.hockey-form select:focus,
+.school-form input:focus,
+.school-form textarea:focus,
+.school-form select:focus,
+.learning-form input:focus,
+.learning-form textarea:focus,
+.learning-form select:focus,
+.skill-form input:focus,
+.skill-form textarea:focus,
+.skill-form select:focus,
+.discipline-form input:focus,
+.discipline-form textarea:focus,
+.discipline-form select:focus,
+.faith-form input:focus,
+.faith-form textarea:focus,
+.faith-form select:focus,
+.experiences-form textarea:focus,
+.experiences-form select:focus,
+.reflection-form input:focus,
+.reflection-form textarea:focus,
+.experience-card textarea:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+}
+
+::placeholder {
+  color: rgba(148, 163, 184, 0.7) !important;
+}
+
+.skill-progress-bar,
+.discipline-pattern-bar,
+.faith-virtue-bar,
+.operation-task-line,
+.learning-chip-grid span,
+.training-type-card,
+.learning-category-card,
+.discipline-result-card,
+.operation-score-grid div,
+.claimed-reward-row,
+.experience-log,
+.discipline-log,
+.faith-log,
+.skill-log,
+.assignment-card {
+  border-color: var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  background: rgba(2, 6, 23, 0.36) !important;
+}
+
+.skill-progress-bar div,
+.discipline-pattern-bar div,
+.faith-virtue-bar div {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2)) !important;
+}
+
+.pull-tab {
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  background: rgba(15, 23, 42, 0.86) !important;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.pull-tab span {
+  background: var(--accent) !important;
+}
+
+.overlay {
+  background: rgba(2, 6, 23, 0.58) !important;
+  backdrop-filter: blur(3px);
+}
+
+@media (max-width: 850px) {
+  .app {
+    padding: 14px;
+  }
+
+  .hero,
+  .panel {
+    padding: 18px;
+  }
+}
