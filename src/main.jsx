@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import "./discipline.css";
 import "./faith.css";
+import "./experiences.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
