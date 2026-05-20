@@ -612,17 +612,6 @@ export default function App() {
         </section>
 
         <BackupPanel />
-
-        <section className="panel">
-          <div className="section-title">
-            <Archive size={24} />
-            <h2>Build Status</h2>
-          </div>
-
-          <p className="muted">
-            Backup system active. Persistent XP active. Modern dashboard theme active. Daily goals are locked to module logs. Completed goals: {completed}/{tasks.length}.
-          </p>
-        </section>
       </main>
     </div>
   );
