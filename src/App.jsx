@@ -13,7 +13,9 @@ import {
   Moon,
   PanelLeftClose,
   Radio,
+  RefreshCw,
   Shield,
+  Trash2,
 } from "lucide-react";
 import FitnessModule from "./modules/FitnessModule.jsx";
 import HockeyModule from "./modules/HockeyModule.jsx";
@@ -26,12 +28,21 @@ import ExperiencesModule from "./modules/ExperiencesModule.jsx";
 import ReflectionModule from "./modules/ReflectionModule.jsx";
 
 const DAILY_MISSION_STORAGE_KEY = "summer-os-daily-mission-state";
+const OPERATION_ARCHIVE_STORAGE_KEY = "summer-os-operation-archive";
+const MAX_ARCHIVED_OPERATIONS = 75;
 
 function getLocalDateString(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function makeId(prefix = "operation") {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 const modules = [
@@ -62,27 +73,17 @@ function makeFreshTasks() {
   return initialTasks.map((task) => ({ ...task, done: false }));
 }
 
-function loadDailyMissionState() {
-  const today = getLocalDateString();
+function mergeSavedTasks(savedTasks) {
+  if (!Array.isArray(savedTasks)) return makeFreshTasks();
 
-  try {
-    const raw = localStorage.getItem(DAILY_MISSION_STORAGE_KEY);
-    if (!raw) return { date: today, tasks: makeFreshTasks() };
+  return initialTasks.map((task) => {
+    const savedTask = savedTasks.find((item) => item.id === task.id);
+    return { ...task, done: Boolean(savedTask?.done) };
+  });
+}
 
-    const parsed = JSON.parse(raw);
-    if (parsed?.date !== today || !Array.isArray(parsed?.tasks)) {
-      return { date: today, tasks: makeFreshTasks() };
-    }
-
-    const mergedTasks = initialTasks.map((task) => {
-      const savedTask = parsed.tasks.find((item) => item.id === task.id);
-      return { ...task, done: Boolean(savedTask?.done) };
-    });
-
-    return { date: today, tasks: mergedTasks };
-  } catch {
-    return { date: today, tasks: makeFreshTasks() };
-  }
+function calculateScore(tasks) {
+  return tasks.reduce((total, task) => total + (task.done ? task.points : 0), 0);
 }
 
 function getStatus(score) {
@@ -92,10 +93,64 @@ function getStatus(score) {
   return "Correction Required";
 }
 
+function makeOperationSnapshot(missionState, source = "manual") {
+  const tasks = mergeSavedTasks(missionState.tasks);
+  const score = calculateScore(tasks);
+  const completedTasks = tasks.filter((task) => task.done);
+  const missedTasks = tasks.filter((task) => !task.done);
+
+  return {
+    id: makeId("operation"),
+    date: missionState.date || getLocalDateString(),
+    archivedAt: new Date().toLocaleString(),
+    source,
+    score,
+    status: getStatus(score),
+    completedCount: completedTasks.length,
+    totalCount: tasks.length,
+    completedTasks,
+    missedTasks,
+    tasks,
+  };
+}
+
+function loadDailyMissionState() {
+  const today = getLocalDateString();
+
+  try {
+    const raw = localStorage.getItem(DAILY_MISSION_STORAGE_KEY);
+    if (!raw) return { date: today, tasks: makeFreshTasks() };
+
+    const parsed = JSON.parse(raw);
+    return {
+      date: parsed?.date || today,
+      tasks: mergeSavedTasks(parsed?.tasks),
+    };
+  } catch {
+    return { date: today, tasks: makeFreshTasks() };
+  }
+}
+
+function loadOperationArchive() {
+  try {
+    const raw = localStorage.getItem(OPERATION_ARCHIVE_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function shouldAutoArchive(missionState) {
+  return missionState.tasks.some((task) => task.done);
+}
+
 export default function App() {
   const [activeModule, setActiveModule] = useState("fitness");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [missionState, setMissionState] = useState(() => loadDailyMissionState());
+  const [operationArchive, setOperationArchive] = useState(() => loadOperationArchive());
+  const [selectedOperationId, setSelectedOperationId] = useState("");
 
   const tasks = missionState.tasks;
   const operationDate = missionState.date;
@@ -105,10 +160,21 @@ export default function App() {
   }, [missionState]);
 
   useEffect(() => {
+    localStorage.setItem(OPERATION_ARCHIVE_STORAGE_KEY, JSON.stringify(operationArchive));
+  }, [operationArchive]);
+
+  useEffect(() => {
     function resetIfDateChanged() {
       const today = getLocalDateString();
+
       setMissionState((prev) => {
         if (prev.date === today) return prev;
+
+        if (shouldAutoArchive(prev)) {
+          const snapshot = makeOperationSnapshot(prev, "automatic rollover");
+          setOperationArchive((archive) => [snapshot, ...archive].slice(0, MAX_ARCHIVED_OPERATIONS));
+        }
+
         return { date: today, tasks: makeFreshTasks() };
       });
     }
@@ -118,13 +184,14 @@ export default function App() {
     return () => window.clearInterval(intervalId);
   }, []);
 
-  const score = useMemo(() => {
-    return tasks.reduce((total, task) => total + (task.done ? task.points : 0), 0);
-  }, [tasks]);
-
+  const score = useMemo(() => calculateScore(tasks), [tasks]);
   const completed = tasks.filter((task) => task.done).length;
   const active = modules.find((module) => module.key === activeModule) ?? modules[0];
   const ActiveIcon = active.icon;
+  const selectedOperation =
+    operationArchive.find((operation) => operation.id === selectedOperationId) ??
+    operationArchive[0] ??
+    null;
 
   function completeTask(taskId) {
     setMissionState((prev) => ({
@@ -133,6 +200,36 @@ export default function App() {
         task.id === taskId ? { ...task, done: true } : task
       ),
     }));
+  }
+
+  function startNewOperation() {
+    const confirmed = window.confirm(
+      "Archive the current operation and start a new operation? This resets today's mission checklist."
+    );
+    if (!confirmed) return;
+
+    setMissionState((prev) => {
+      const snapshot = makeOperationSnapshot(prev, "manual start new operation");
+      setOperationArchive((archive) => [snapshot, ...archive].slice(0, MAX_ARCHIVED_OPERATIONS));
+      setSelectedOperationId(snapshot.id);
+      return { date: getLocalDateString(), tasks: makeFreshTasks() };
+    });
+  }
+
+  function deleteArchivedOperation(operationId) {
+    const confirmed = window.confirm("Delete this archived operation?");
+    if (!confirmed) return;
+
+    setOperationArchive((archive) => archive.filter((operation) => operation.id !== operationId));
+    if (selectedOperationId === operationId) setSelectedOperationId("");
+  }
+
+  function clearOperationArchive() {
+    const confirmed = window.confirm("Clear the entire operation archive?");
+    if (!confirmed) return;
+
+    setOperationArchive([]);
+    setSelectedOperationId("");
   }
 
   function renderActiveModule() {
@@ -274,6 +371,105 @@ export default function App() {
           </div>
         </section>
 
+        <section className="panel operation-control-panel">
+          <div className="section-title">
+            <Archive size={24} />
+            <h2>Operation Control</h2>
+          </div>
+
+          <p className="muted">
+            Archive the current mission board and reset the daily checklist when you want to begin a new operation.
+          </p>
+
+          <div className="module-actions">
+            <button className="primary-action" onClick={startNewOperation}>
+              <RefreshCw size={18} />
+              Start New Operation
+            </button>
+
+            <button className="secondary-action" onClick={clearOperationArchive}>
+              Clear Archive
+            </button>
+          </div>
+        </section>
+
+        <section className="panel operation-archive-panel">
+          <div className="section-title">
+            <Archive size={24} />
+            <h2>Operation Archive</h2>
+          </div>
+
+          {operationArchive.length === 0 ? (
+            <p className="muted">No archived operations yet.</p>
+          ) : (
+            <div className="operation-archive-layout">
+              <div className="operation-archive-list">
+                {operationArchive.map((operation) => (
+                  <button
+                    key={operation.id}
+                    className={`operation-archive-button ${selectedOperation?.id === operation.id ? "selected" : ""}`}
+                    onClick={() => setSelectedOperationId(operation.id)}
+                  >
+                    <strong>{operation.date}</strong>
+                    <span>{operation.score} pts · {operation.status}</span>
+                    <small>{operation.completedCount}/{operation.totalCount} missions</small>
+                  </button>
+                ))}
+              </div>
+
+              {selectedOperation && (
+                <div className="operation-archive-detail">
+                  <div className="operation-archive-detail-header">
+                    <div>
+                      <p>Archived Operation</p>
+                      <h3>{selectedOperation.date}</h3>
+                      <span>{selectedOperation.archivedAt} · {selectedOperation.source}</span>
+                    </div>
+
+                    <button
+                      className="danger-action small"
+                      onClick={() => deleteArchivedOperation(selectedOperation.id)}
+                      aria-label="Delete archived operation"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+
+                  <div className="operation-score-grid">
+                    <div><span>Score</span><strong>{selectedOperation.score}</strong></div>
+                    <div><span>Status</span><strong>{selectedOperation.status}</strong></div>
+                    <div><span>Complete</span><strong>{selectedOperation.completedCount}/{selectedOperation.totalCount}</strong></div>
+                  </div>
+
+                  <div className="operation-task-columns">
+                    <div>
+                      <h4>Completed Missions</h4>
+                      {selectedOperation.completedTasks.length === 0 ? (
+                        <p className="muted">None completed.</p>
+                      ) : (
+                        selectedOperation.completedTasks.map((task) => (
+                          <p key={task.id} className="operation-task-line complete">{task.label}</p>
+                        ))
+                      )}
+                    </div>
+
+                    <div>
+                      <h4>Missed Missions</h4>
+                      {selectedOperation.missedTasks.length === 0 ? (
+                        <p className="muted">No missed missions.</p>
+                      ) : (
+                        selectedOperation.missedTasks.map((task) => (
+                          <p key={task.id} className="operation-task-line missed">{task.label}</p>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+
         <section className="panel">
           <div className="section-title">
             <Archive size={24} />
@@ -281,7 +477,7 @@ export default function App() {
           </div>
 
           <p className="muted">
-            Daily mission tasks are locked to module logs. Completed objectives: {completed}/{tasks.length}. Checklist resets automatically on a new local date.
+            Operation archive active. Daily mission tasks are locked to module logs. Completed objectives: {completed}/{tasks.length}.
           </p>
         </section>
       </main>
