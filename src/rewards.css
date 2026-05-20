@@ -1,0 +1,157 @@
+.rewards-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.rewards-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.rewards-summary div {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 14px;
+}
+
+.rewards-summary span {
+  display: block;
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.rewards-summary strong {
+  display: block;
+  margin-top: 6px;
+  color: #fcd34d;
+  font-size: 22px;
+  text-transform: uppercase;
+}
+
+.reward-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.reward-tier-card {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.reward-tier-card.unlocked {
+  border-color: rgba(252, 211, 77, 0.65);
+  background: rgba(252, 211, 77, 0.08);
+}
+
+.reward-tier-card.claimed {
+  border-color: #fcd34d;
+  background: rgba(252, 211, 77, 0.14);
+}
+
+.reward-tier-card.locked {
+  opacity: 0.74;
+}
+
+.reward-tier-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #292524;
+  padding-bottom: 10px;
+}
+
+.reward-tier-header p {
+  margin: 0 0 4px;
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.reward-tier-header h3 {
+  margin: 0;
+  color: #fcd34d;
+  text-transform: uppercase;
+}
+
+.reward-description {
+  margin: 0;
+  color: #fef3c7;
+  line-height: 1.5;
+}
+
+.reward-tier-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.claimed-reward-history {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.claimed-reward-history h3 {
+  margin: 0;
+  color: #fcd34d;
+  text-transform: uppercase;
+}
+
+.claimed-reward-list {
+  display: grid;
+  gap: 8px;
+}
+
+.claimed-reward-row {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+}
+
+.claimed-reward-row strong {
+  display: block;
+  color: #fcd34d;
+}
+
+.claimed-reward-row span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(253, 230, 138, 0.72);
+  font-size: 13px;
+}
+
+.operation-claimed-rewards {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 12px;
+}
+
+.operation-claimed-rewards h4 {
+  margin: 0 0 8px;
+  color: #fcd34d;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.operation-claimed-rewards p {
+  margin: 6px 0 0;
+  color: #fef3c7;
+  font-size: 13px;
+}
+
+@media (max-width: 950px) {
+  .rewards-summary,
+  .reward-tier-grid {
+    grid-template-columns: 1fr;
+  }
+}
