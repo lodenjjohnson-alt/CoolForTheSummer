@@ -1,3 +1,4 @@
+import SkillTreeModule from "./modules/SkillTreeModule.jsx";
 import LearningModule from "./modules/LearningModule.jsx";
 import SchoolModule from "./modules/SchoolModule.jsx";
 import HockeyModule from "./modules/HockeyModule.jsx";
@@ -233,6 +234,16 @@ export default function App() {
       setTasks((prev) =>
         prev.map((task) =>
           task.id === 4 ? { ...task, done: true } : task
+        )
+      );
+    }}
+  />
+) : activeModule === "skills" ? (
+  <SkillTreeModule
+    onSave={() => {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === 5 ? { ...task, done: true } : task
         )
       );
     }}
