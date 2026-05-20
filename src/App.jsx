@@ -23,6 +23,7 @@ import SkillTreeModule from "./modules/SkillTreeModule.jsx";
 import DisciplineModule from "./modules/DisciplineModule.jsx";
 import FaithModule from "./modules/FaithModule.jsx";
 import ExperiencesModule from "./modules/ExperiencesModule.jsx";
+import ReflectionModule from "./modules/ReflectionModule.jsx";
 
 function getLocalDateString(date = new Date()) {
   const year = date.getFullYear();
@@ -98,6 +99,7 @@ export default function App() {
     if (activeModule === "discipline") return <DisciplineModule onSave={onSave} />;
     if (activeModule === "faith") return <FaithModule onSave={onSave} />;
     if (activeModule === "experiences") return <ExperiencesModule onSave={onSave} />;
+    if (activeModule === "reflection") return <ReflectionModule onSave={onSave} />;
 
     return (
       <p className="muted">
