@@ -318,3 +318,168 @@ button {
     grid-template-columns: 1fr;
   }
 }
+.fitness-module {
+  margin-top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.module-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mini-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 12px;
+}
+
+.mini-stat span {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: rgba(253, 230, 138, 0.7);
+}
+
+.mini-stat strong {
+  display: block;
+  color: #fcd34d;
+}
+
+.fitness-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fitness-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.fitness-form label span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(253, 230, 138, 0.75);
+}
+
+.fitness-form input,
+.fitness-form textarea {
+  width: 100%;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fde68a;
+  padding: 11px;
+  outline: none;
+}
+
+.fitness-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.fitness-form input:focus,
+.fitness-form textarea:focus {
+  border-color: #fcd34d;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.module-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.primary-action,
+.secondary-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #fcd34d;
+  padding: 11px 14px;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.primary-action {
+  background: #d97706;
+  color: #111827;
+}
+
+.secondary-action {
+  background: rgba(0, 0, 0, 0.35);
+  color: #fcd34d;
+}
+
+.recent-logs {
+  display: grid;
+  gap: 12px;
+}
+
+.recent-logs h3 {
+  margin: 0;
+  text-transform: uppercase;
+  color: #fcd34d;
+}
+
+.fitness-log {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 14px;
+}
+
+.fitness-log-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #292524;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.fitness-log-header strong {
+  color: #fcd34d;
+}
+
+.fitness-log-header span {
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 13px;
+}
+
+.fitness-log-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.fitness-log-grid p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: rgba(253, 230, 138, 0.85);
+  font-size: 13px;
+}
+
+.log-notes {
+  margin: 12px 0 0;
+  color: #fef3c7;
+  line-height: 1.5;
+}
+
+@media (max-width: 850px) {
+  .module-status-grid,
+  .fitness-form,
+  .fitness-log-grid {
+    grid-template-columns: 1fr;
+  }
+}
