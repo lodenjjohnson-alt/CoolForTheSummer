@@ -55,6 +55,14 @@ function makeId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+function getLevel(xp) {
+  return Math.max(1, Math.floor(Number(xp || 0) / 20) + 1);
+}
+
+function getProgressToNextLevel(xp) {
+  return Number(xp || 0) % 20;
+}
+
 function makeInitialData() {
   return {
     skills: defaultSkills.map((name) => ({
@@ -82,14 +90,6 @@ function loadSkillTreeData() {
   }
 }
 
-function getLevel(xp) {
-  return Math.max(1, Math.floor(Number(xp || 0) / 20) + 1);
-}
-
-function getProgressToNextLevel(xp) {
-  return Number(xp || 0) % 20;
-}
-
 export default function SkillTreeModule({ onSave }) {
   const [data, setData] = useState(() => loadSkillTreeData());
   const [skillAction, setSkillAction] = useState(blankSkillAction);
@@ -99,19 +99,23 @@ export default function SkillTreeModule({ onSave }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
+  const sortedSkills = useMemo(() => {
+    return [...data.skills].sort((a, b) => Number(b.xp || 0) - Number(a.xp || 0));
+  }, [data.skills]);
+
   const totalXP = useMemo(() => {
     return data.skills.reduce((sum, skill) => sum + Number(skill.xp || 0), 0);
   }, [data.skills]);
 
-  const highestSkill = useMemo(() => {
-    if (data.skills.length === 0) return null;
-
-    return [...data.skills].sort(
-      (a, b) => Number(b.xp || 0) - Number(a.xp || 0)
-    )[0];
-  }, [data.skills]);
-
+  const highestSkill = sortedSkills[0] ?? null;
   const totalActions = data.logs.length;
+  const averageLevel =
+    data.skills.length > 0
+      ? (
+          data.skills.reduce((sum, skill) => sum + getLevel(skill.xp), 0) /
+          data.skills.length
+        ).toFixed(1)
+      : "0";
 
   function updateActionField(field, value) {
     setSkillAction((prev) => ({
@@ -251,212 +255,252 @@ export default function SkillTreeModule({ onSave }) {
         </div>
 
         <div className="mini-stat">
+          <Target size={20} />
+          <div>
+            <span>Avg Level</span>
+            <strong>{averageLevel}</strong>
+          </div>
+        </div>
+
+        <div className="mini-stat">
           <CheckCircle2 size={20} />
           <div>
-            <span>Actions Logged</span>
+            <span>Actions</span>
             <strong>{totalActions}</strong>
           </div>
         </div>
       </div>
 
-      <div className="skill-tree-grid">
-        {data.skills.map((skill) => {
-          const level = getLevel(skill.xp);
-          const progress = getProgressToNextLevel(skill.xp);
-          const percent = Math.min(100, (progress / 20) * 100);
-
-          return (
-            <div key={skill.id} className="skill-card">
-              <div className="skill-card-header">
-                <div>
-                  <strong>{skill.name}</strong>
-                  <span>Level {level}</span>
-                </div>
-
-                <button
-                  className="danger-action small"
-                  onClick={() => deleteSkill(skill.id)}
-                  aria-label="Delete skill"
-                >
-                  <Trash2 size={14} />
-                </button>
+      <div className="skill-command-layout">
+        <div className="skill-command-column">
+          <div className="skill-panel">
+            <div className="skill-panel-header">
+              <div>
+                <p>Skill Command</p>
+                <h3>Log Action</h3>
               </div>
-
-              <div className="skill-progress-bar">
-                <div style={{ width: `${percent}%` }} />
-              </div>
-
-              <p>
-                {skill.xp} XP · {20 - progress} XP until next level
-              </p>
             </div>
-          );
-        })}
+
+            <div className="skill-form compact">
+              <label>
+                <span>Skill</span>
+                <select
+                  value={skillAction.skill}
+                  onChange={(event) =>
+                    updateActionField("skill", event.target.value)
+                  }
+                >
+                  {skillOptions.map((skill) => (
+                    <option key={skill}>{skill}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                <span>XP Gain</span>
+                <input
+                  value={skillAction.xp}
+                  onChange={(event) => updateActionField("xp", event.target.value)}
+                  placeholder="10"
+                />
+              </label>
+
+              <label>
+                <span>Difficulty</span>
+                <input
+                  value={skillAction.difficulty}
+                  onChange={(event) =>
+                    updateActionField("difficulty", event.target.value)
+                  }
+                  placeholder="1-10"
+                />
+              </label>
+
+              <label className="full-width">
+                <span>Action Completed</span>
+                <textarea
+                  value={skillAction.action}
+                  onChange={(event) =>
+                    updateActionField("action", event.target.value)
+                  }
+                  placeholder="What did you do?"
+                />
+              </label>
+
+              <label className="full-width">
+                <span>Evidence</span>
+                <textarea
+                  value={skillAction.evidence}
+                  onChange={(event) =>
+                    updateActionField("evidence", event.target.value)
+                  }
+                  placeholder="What proves improvement?"
+                />
+              </label>
+
+              <label className="full-width">
+                <span>Next Step</span>
+                <textarea
+                  value={skillAction.nextStep}
+                  onChange={(event) =>
+                    updateActionField("nextStep", event.target.value)
+                  }
+                  placeholder="What should happen next?"
+                />
+              </label>
+            </div>
+
+            <div className="module-actions">
+              <button className="primary-action" onClick={saveSkillAction}>
+                <Save size={18} />
+                Save Skill Action
+              </button>
+
+              <button className="secondary-action" onClick={resetSkillTree}>
+                Reset Tree
+              </button>
+            </div>
+          </div>
+
+          <div className="skill-panel">
+            <div className="skill-panel-header">
+              <div>
+                <p>Expansion</p>
+                <h3>Add New Skill</h3>
+              </div>
+            </div>
+
+            <div className="skill-form compact">
+              <label>
+                <span>Skill Name</span>
+                <input
+                  value={newSkill.name}
+                  onChange={(event) =>
+                    updateNewSkillField("name", event.target.value)
+                  }
+                  placeholder="New skill"
+                />
+              </label>
+
+              <label>
+                <span>Starting XP</span>
+                <input
+                  value={newSkill.startingXP}
+                  onChange={(event) =>
+                    updateNewSkillField("startingXP", event.target.value)
+                  }
+                  placeholder="0"
+                />
+              </label>
+            </div>
+
+            <div className="module-actions">
+              <button className="primary-action" onClick={addNewSkill}>
+                <Plus size={18} />
+                Add Skill
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="skill-panel skill-roster-panel">
+          <div className="skill-panel-header">
+            <div>
+              <p>Asset Roster</p>
+              <h3>Skill Levels</h3>
+            </div>
+          </div>
+
+          <div className="skill-roster">
+            {sortedSkills.map((skill, index) => {
+              const level = getLevel(skill.xp);
+              const progress = getProgressToNextLevel(skill.xp);
+              const percent = Math.min(100, (progress / 20) * 100);
+
+              return (
+                <div key={skill.id} className="skill-row">
+                  <div className="skill-rank">#{index + 1}</div>
+
+                  <div className="skill-main">
+                    <div className="skill-row-top">
+                      <strong>{skill.name}</strong>
+                      <span>Level {level}</span>
+                    </div>
+
+                    <div className="skill-progress-bar">
+                      <div style={{ width: `${percent}%` }} />
+                    </div>
+
+                    <p>
+                      {skill.xp} XP · {20 - progress} XP until next level
+                    </p>
+                  </div>
+
+                  <button
+                    className="danger-action small"
+                    onClick={() => deleteSkill(skill.id)}
+                    aria-label="Delete skill"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      <div className="skill-card">
-        <h3>Add New Skill</h3>
-
-        <div className="skill-form">
-          <label>
-            <span>Skill Name</span>
-            <input
-              value={newSkill.name}
-              onChange={(event) =>
-                updateNewSkillField("name", event.target.value)
-              }
-              placeholder="New skill"
-            />
-          </label>
-
-          <label>
-            <span>Starting XP</span>
-            <input
-              value={newSkill.startingXP}
-              onChange={(event) =>
-                updateNewSkillField("startingXP", event.target.value)
-              }
-              placeholder="0"
-            />
-          </label>
+      <div className="skill-panel">
+        <div className="skill-panel-header">
+          <div>
+            <p>Action History</p>
+            <h3>Recent Skill Actions</h3>
+          </div>
         </div>
-
-        <div className="module-actions">
-          <button className="primary-action" onClick={addNewSkill}>
-            <Plus size={18} />
-            Add Skill
-          </button>
-        </div>
-      </div>
-
-      <div className="skill-card">
-        <h3>Log Skill Action</h3>
-
-        <div className="skill-form">
-          <label>
-            <span>Skill</span>
-            <select
-              value={skillAction.skill}
-              onChange={(event) =>
-                updateActionField("skill", event.target.value)
-              }
-            >
-              {skillOptions.map((skill) => (
-                <option key={skill}>{skill}</option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            <span>XP Gain</span>
-            <input
-              value={skillAction.xp}
-              onChange={(event) => updateActionField("xp", event.target.value)}
-              placeholder="10"
-            />
-          </label>
-
-          <label>
-            <span>Difficulty</span>
-            <input
-              value={skillAction.difficulty}
-              onChange={(event) =>
-                updateActionField("difficulty", event.target.value)
-              }
-              placeholder="1-10"
-            />
-          </label>
-
-          <label className="full-width">
-            <span>Action Completed</span>
-            <textarea
-              value={skillAction.action}
-              onChange={(event) =>
-                updateActionField("action", event.target.value)
-              }
-              placeholder="What did you do?"
-            />
-          </label>
-
-          <label className="full-width">
-            <span>Evidence</span>
-            <textarea
-              value={skillAction.evidence}
-              onChange={(event) =>
-                updateActionField("evidence", event.target.value)
-              }
-              placeholder="What proves you improved?"
-            />
-          </label>
-
-          <label className="full-width">
-            <span>Next Step</span>
-            <textarea
-              value={skillAction.nextStep}
-              onChange={(event) =>
-                updateActionField("nextStep", event.target.value)
-              }
-              placeholder="What should you do next?"
-            />
-          </label>
-        </div>
-
-        <div className="module-actions">
-          <button className="primary-action" onClick={saveSkillAction}>
-            <Save size={18} />
-            Save Skill Action
-          </button>
-
-          <button className="secondary-action" onClick={resetSkillTree}>
-            Reset Skill Tree
-          </button>
-        </div>
-      </div>
-
-      <div className="recent-logs">
-        <h3>Recent Skill Actions</h3>
 
         {data.logs.length === 0 ? (
           <p className="muted">No skill actions logged yet.</p>
         ) : (
-          data.logs.slice(0, 8).map((log) => (
-            <div key={log.id} className="skill-log">
-              <div className="skill-log-header">
-                <div>
-                  <strong>{log.skill}</strong>
-                  <span>
-                    {log.date} · +{log.xpGain} XP
-                  </span>
+          <div className="skill-log-list">
+            {data.logs.slice(0, 8).map((log) => (
+              <div key={log.id} className="skill-log">
+                <div className="skill-log-header">
+                  <div>
+                    <strong>{log.skill}</strong>
+                    <span>
+                      {log.date} · +{log.xpGain} XP
+                    </span>
+                  </div>
+
+                  <button
+                    className="danger-action small"
+                    onClick={() => deleteLog(log.id)}
+                    aria-label="Delete skill log"
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
 
-                <button
-                  className="danger-action small"
-                  onClick={() => deleteLog(log.id)}
-                  aria-label="Delete skill log"
-                >
-                  <Trash2 size={14} />
-                </button>
+                {log.action && (
+                  <p>
+                    <span>Action:</span> {log.action}
+                  </p>
+                )}
+
+                {log.evidence && (
+                  <p>
+                    <span>Evidence:</span> {log.evidence}
+                  </p>
+                )}
+
+                {log.nextStep && (
+                  <p>
+                    <span>Next:</span> {log.nextStep}
+                  </p>
+                )}
               </div>
-
-              {log.action && (
-                <p>
-                  <span>Action:</span> {log.action}
-                </p>
-              )}
-
-              {log.evidence && (
-                <p>
-                  <span>Evidence:</span> {log.evidence}
-                </p>
-              )}
-
-              {log.nextStep && (
-                <p>
-                  <span>Next:</span> {log.nextStep}
-                </p>
-              )}
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
