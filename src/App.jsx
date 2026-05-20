@@ -21,6 +21,7 @@ import SchoolModule from "./modules/SchoolModule.jsx";
 import LearningModule from "./modules/LearningModule.jsx";
 import SkillTreeModule from "./modules/SkillTreeModule.jsx";
 import DisciplineModule from "./modules/DisciplineModule.jsx";
+import FaithModule from "./modules/FaithModule.jsx";
 
 function getLocalDateString(date = new Date()) {
   const year = date.getFullYear();
@@ -94,6 +95,7 @@ export default function App() {
     if (activeModule === "learning") return <LearningModule onSave={onSave} />;
     if (activeModule === "skills") return <SkillTreeModule onSave={onSave} />;
     if (activeModule === "discipline") return <DisciplineModule onSave={onSave} />;
+    if (activeModule === "faith") return <FaithModule onSave={onSave} />;
 
     return (
       <p className="muted">
