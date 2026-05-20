@@ -6,29 +6,57 @@ const rewardTiers = [
     id: "minor",
     points: 100,
     title: "Minor Reward",
-    rank: "Acceptable Operation",
-    description: "A small clean reward after crossing the minimum standard.",
+    rank: "On Track",
+    description:
+      "You met the baseline for a productive day. This reward should feel good without pulling you off track.",
+    suggestions: [
+      "20 minutes of clean entertainment after responsibilities are done",
+      "A good snack or drink that does not turn into a binge",
+      "A short recovery walk, music session, or relaxed stretch",
+      "A small purchase under a preset limit",
+    ],
   },
   {
     id: "strong",
     points: 140,
     title: "Strong Reward",
-    rank: "Strong Operation",
-    description: "A better reward earned by completing a serious day of work.",
+    rank: "Strong Day",
+    description:
+      "You completed a serious day of execution. This reward can be more satisfying, but it should still protect tomorrow.",
+    suggestions: [
+      "Watch one movie or long video with a hard stop time",
+      "Order or make a favorite meal that still supports training",
+      "Go do something social, active, or outdoors",
+      "Buy a useful item for training, learning, faith, or your room setup",
+    ],
   },
   {
     id: "elite",
     points: 170,
     title: "Elite Reward",
-    rank: "Dominant Operation",
-    description: "A high-value reward for an elite day of execution.",
+    rank: "Elite Day",
+    description:
+      "You produced a high-level day. This reward should feel earned and memorable, not cheap or mindless.",
+    suggestions: [
+      "Plan a bigger experience: fishing, hiking, photography, or a day trip",
+      "Upgrade a tool that helps your goals: book, app, gear, or course",
+      "Take a longer guilt-free recovery block after the nightly reflection",
+      "Choose a meaningful family or friend experience",
+    ],
   },
   {
     id: "perfect",
     points: 200,
-    title: "Perfect Operation Reward",
-    rank: "Perfect Operation",
-    description: "The top reward tier. This should stay rare and meaningful.",
+    title: "Perfect Day Reward",
+    rank: "Perfect Day",
+    description:
+      "You hit the highest standard. This should be rare, protected, and worth remembering.",
+    suggestions: [
+      "Save toward a major reward instead of spending immediately",
+      "Schedule a premium experience that fits your goals",
+      "Buy a high-value tool for hockey, learning, business, or faith",
+      "Take a fully intentional rest block with no guilt and no spiral",
+    ],
   },
 ];
 
@@ -83,6 +111,15 @@ export default function RewardsPanel({ score, claimedRewards, onClaimReward }) {
               </div>
 
               <p className="reward-description">{tier.description}</p>
+
+              <div className="reward-suggestions">
+                <h4>Suggestions</h4>
+                <ul>
+                  {tier.suggestions.map((suggestion) => (
+                    <li key={suggestion}>{suggestion}</li>
+                  ))}
+                </ul>
+              </div>
 
               <button
                 className={unlocked && !claimed ? "primary-action" : "secondary-action"}
