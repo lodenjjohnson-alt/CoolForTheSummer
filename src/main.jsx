@@ -10,6 +10,7 @@ import "./operationArchive.css";
 import "./rewards.css";
 import "./modernTheme.css";
 import "./xpSystem.css";
+import "./backupSystem.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
