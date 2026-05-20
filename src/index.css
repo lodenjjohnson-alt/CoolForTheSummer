@@ -483,3 +483,147 @@ button {
     grid-template-columns: 1fr;
   }
 }
+.hockey-module {
+  margin-top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.hockey-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hockey-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.hockey-form label span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(253, 230, 138, 0.75);
+}
+
+.hockey-form input,
+.hockey-form textarea,
+.hockey-form select {
+  width: 100%;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fde68a;
+  padding: 11px;
+  outline: none;
+}
+
+.hockey-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.hockey-form input:focus,
+.hockey-form textarea:focus,
+.hockey-form select:focus {
+  border-color: #fcd34d;
+}
+
+.hockey-breakdown {
+  display: grid;
+  gap: 12px;
+}
+
+.hockey-breakdown h3,
+.recent-logs h3 {
+  margin: 0;
+  text-transform: uppercase;
+  color: #fcd34d;
+}
+
+.training-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.training-type-card {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 12px;
+}
+
+.training-type-card span {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: rgba(253, 230, 138, 0.7);
+}
+
+.training-type-card strong {
+  display: block;
+  margin-top: 4px;
+  color: #fcd34d;
+  font-size: 24px;
+}
+
+.hockey-log {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 14px;
+}
+
+.hockey-log-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #292524;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.hockey-log-header strong {
+  display: block;
+  color: #fcd34d;
+}
+
+.hockey-log-header span {
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 13px;
+}
+
+.hockey-log-score {
+  text-align: right;
+}
+
+.hockey-log-score span {
+  display: block;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.hockey-log-score strong {
+  font-size: 24px;
+}
+
+.hockey-log-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.hockey-log-grid p {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  color: rgba(253, 230, 138, 0.85);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@media (max-width: 850px) {
+  .hockey-form,
+  .training-type-grid {
+    grid-template-columns: 1fr;
+  }
+}
