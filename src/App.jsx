@@ -26,6 +26,7 @@ import DisciplineModule from "./modules/DisciplineModule.jsx";
 import FaithModule from "./modules/FaithModule.jsx";
 import ExperiencesModule from "./modules/ExperiencesModule.jsx";
 import ReflectionModule from "./modules/ReflectionModule.jsx";
+import RewardsPanel from "./components/RewardsPanel.jsx";
 
 const DAILY_MISSION_STORAGE_KEY = "summer-os-daily-mission-state";
 const OPERATION_ARCHIVE_STORAGE_KEY = "summer-os-operation-archive";
@@ -73,6 +74,10 @@ function makeFreshTasks() {
   return initialTasks.map((task) => ({ ...task, done: false }));
 }
 
+function makeFreshMissionState(date = getLocalDateString()) {
+  return { date, tasks: makeFreshTasks(), claimedRewards: [] };
+}
+
 function mergeSavedTasks(savedTasks) {
   if (!Array.isArray(savedTasks)) return makeFreshTasks();
 
@@ -80,6 +85,10 @@ function mergeSavedTasks(savedTasks) {
     const savedTask = savedTasks.find((item) => item.id === task.id);
     return { ...task, done: Boolean(savedTask?.done) };
   });
+}
+
+function mergeClaimedRewards(claimedRewards) {
+  return Array.isArray(claimedRewards) ? claimedRewards : [];
 }
 
 function calculateScore(tasks) {
@@ -98,6 +107,7 @@ function makeOperationSnapshot(missionState, source = "manual") {
   const score = calculateScore(tasks);
   const completedTasks = tasks.filter((task) => task.done);
   const missedTasks = tasks.filter((task) => !task.done);
+  const claimedRewards = mergeClaimedRewards(missionState.claimedRewards);
 
   return {
     id: makeId("operation"),
@@ -110,6 +120,7 @@ function makeOperationSnapshot(missionState, source = "manual") {
     totalCount: tasks.length,
     completedTasks,
     missedTasks,
+    claimedRewards,
     tasks,
   };
 }
@@ -119,15 +130,16 @@ function loadDailyMissionState() {
 
   try {
     const raw = localStorage.getItem(DAILY_MISSION_STORAGE_KEY);
-    if (!raw) return { date: today, tasks: makeFreshTasks() };
+    if (!raw) return makeFreshMissionState(today);
 
     const parsed = JSON.parse(raw);
     return {
       date: parsed?.date || today,
       tasks: mergeSavedTasks(parsed?.tasks),
+      claimedRewards: mergeClaimedRewards(parsed?.claimedRewards),
     };
   } catch {
-    return { date: today, tasks: makeFreshTasks() };
+    return makeFreshMissionState(today);
   }
 }
 
@@ -142,7 +154,10 @@ function loadOperationArchive() {
 }
 
 function shouldAutoArchive(missionState) {
-  return missionState.tasks.some((task) => task.done);
+  return (
+    missionState.tasks.some((task) => task.done) ||
+    mergeClaimedRewards(missionState.claimedRewards).length > 0
+  );
 }
 
 export default function App() {
@@ -154,6 +169,7 @@ export default function App() {
 
   const tasks = missionState.tasks;
   const operationDate = missionState.date;
+  const claimedRewards = mergeClaimedRewards(missionState.claimedRewards);
 
   useEffect(() => {
     localStorage.setItem(DAILY_MISSION_STORAGE_KEY, JSON.stringify(missionState));
@@ -175,7 +191,7 @@ export default function App() {
           setOperationArchive((archive) => [snapshot, ...archive].slice(0, MAX_ARCHIVED_OPERATIONS));
         }
 
-        return { date: today, tasks: makeFreshTasks() };
+        return makeFreshMissionState(today);
       });
     }
 
@@ -202,9 +218,33 @@ export default function App() {
     }));
   }
 
+  function claimReward(tier) {
+    setMissionState((prev) => {
+      const alreadyClaimed = mergeClaimedRewards(prev.claimedRewards).some(
+        (reward) => reward.tierId === tier.id
+      );
+
+      if (alreadyClaimed) return prev;
+
+      return {
+        ...prev,
+        claimedRewards: [
+          ...mergeClaimedRewards(prev.claimedRewards),
+          {
+            id: makeId("reward"),
+            tierId: tier.id,
+            title: tier.title,
+            points: tier.points,
+            claimedAt: new Date().toLocaleString(),
+          },
+        ],
+      };
+    });
+  }
+
   function startNewOperation() {
     const confirmed = window.confirm(
-      "Archive the current operation and start a new operation? This resets today's mission checklist."
+      "Archive the current operation and start a new operation? This resets today's mission checklist and reward claims."
     );
     if (!confirmed) return;
 
@@ -212,7 +252,7 @@ export default function App() {
       const snapshot = makeOperationSnapshot(prev, "manual start new operation");
       setOperationArchive((archive) => [snapshot, ...archive].slice(0, MAX_ARCHIVED_OPERATIONS));
       setSelectedOperationId(snapshot.id);
-      return { date: getLocalDateString(), tasks: makeFreshTasks() };
+      return makeFreshMissionState(getLocalDateString());
     });
   }
 
@@ -371,6 +411,12 @@ export default function App() {
           </div>
         </section>
 
+        <RewardsPanel
+          score={score}
+          claimedRewards={claimedRewards}
+          onClaimReward={claimReward}
+        />
+
         <section className="panel operation-control-panel">
           <div className="section-title">
             <Archive size={24} />
@@ -441,6 +487,15 @@ export default function App() {
                     <div><span>Complete</span><strong>{selectedOperation.completedCount}/{selectedOperation.totalCount}</strong></div>
                   </div>
 
+                  {Array.isArray(selectedOperation.claimedRewards) && selectedOperation.claimedRewards.length > 0 && (
+                    <div className="operation-claimed-rewards">
+                      <h4>Claimed Rewards</h4>
+                      {selectedOperation.claimedRewards.map((reward) => (
+                        <p key={reward.id}>{reward.title} · {reward.points} pts</p>
+                      ))}
+                    </div>
+                  )}
+
                   <div className="operation-task-columns">
                     <div>
                       <h4>Completed Missions</h4>
@@ -477,7 +532,7 @@ export default function App() {
           </div>
 
           <p className="muted">
-            Operation archive active. Daily mission tasks are locked to module logs. Completed objectives: {completed}/{tasks.length}.
+            Rewards system active. Operation archive active. Daily mission tasks are locked to module logs. Completed objectives: {completed}/{tasks.length}.
           </p>
         </section>
       </main>
