@@ -15,6 +15,7 @@ import {
   Radio,
   RefreshCw,
   Shield,
+  Sparkles,
   Trash2,
 } from "lucide-react";
 import FitnessModule from "./modules/FitnessModule.jsx";
@@ -30,7 +31,22 @@ import RewardsPanel from "./components/RewardsPanel.jsx";
 
 const DAILY_MISSION_STORAGE_KEY = "summer-os-daily-mission-state";
 const OPERATION_ARCHIVE_STORAGE_KEY = "summer-os-operation-archive";
+const XP_STORAGE_KEY = "summer-os-xp-state";
 const MAX_ARCHIVED_OPERATIONS = 75;
+const XP_PER_LEVEL = 100;
+
+const levelTitles = [
+  "Starter",
+  "Momentum Builder",
+  "Consistent Closer",
+  "High Performer",
+  "Elite Builder",
+  "Summer Pro",
+  "Relentless",
+  "Limit Breaker",
+  "Prime Mover",
+  "Transcendent",
+];
 
 function getLocalDateString(date = new Date()) {
   const year = date.getFullYear();
@@ -102,6 +118,23 @@ function getStatus(score) {
   return "Needs Attention";
 }
 
+function getLevelInfo(totalXp) {
+  const safeXp = Math.max(0, Number(totalXp) || 0);
+  const level = Math.floor(safeXp / XP_PER_LEVEL) + 1;
+  const currentLevelXp = safeXp % XP_PER_LEVEL;
+  const title = levelTitles[Math.min(level - 1, levelTitles.length - 1)];
+  const progressPercent = Math.min(100, (currentLevelXp / XP_PER_LEVEL) * 100);
+
+  return {
+    totalXp: safeXp,
+    level,
+    title,
+    currentLevelXp,
+    nextLevelXp: XP_PER_LEVEL,
+    progressPercent,
+  };
+}
+
 function makeOperationSnapshot(missionState, source = "manual") {
   const tasks = mergeSavedTasks(missionState.tasks);
   const score = calculateScore(tasks);
@@ -153,6 +186,28 @@ function loadOperationArchive() {
   }
 }
 
+function loadXpState() {
+  try {
+    const raw = localStorage.getItem(XP_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Number.isFinite(Number(parsed?.totalXp))) {
+        return { totalXp: Math.max(0, Number(parsed.totalXp)) };
+      }
+    }
+  } catch {
+    // Fall through to migration calculation.
+  }
+
+  const archivedXp = loadOperationArchive().reduce(
+    (total, operation) => total + (Number(operation.score) || 0),
+    0
+  );
+  const currentXp = calculateScore(loadDailyMissionState().tasks);
+
+  return { totalXp: archivedXp + currentXp };
+}
+
 function shouldAutoArchive(missionState) {
   return (
     missionState.tasks.some((task) => task.done) ||
@@ -165,6 +220,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [missionState, setMissionState] = useState(() => loadDailyMissionState());
   const [operationArchive, setOperationArchive] = useState(() => loadOperationArchive());
+  const [xpState, setXpState] = useState(() => loadXpState());
   const [selectedOperationId, setSelectedOperationId] = useState("");
 
   const tasks = missionState.tasks;
@@ -178,6 +234,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem(OPERATION_ARCHIVE_STORAGE_KEY, JSON.stringify(operationArchive));
   }, [operationArchive]);
+
+  useEffect(() => {
+    localStorage.setItem(XP_STORAGE_KEY, JSON.stringify(xpState));
+  }, [xpState]);
 
   useEffect(() => {
     function resetIfDateChanged() {
@@ -201,6 +261,7 @@ export default function App() {
   }, []);
 
   const score = useMemo(() => calculateScore(tasks), [tasks]);
+  const levelInfo = useMemo(() => getLevelInfo(xpState.totalXp), [xpState.totalXp]);
   const completed = tasks.filter((task) => task.done).length;
   const active = modules.find((module) => module.key === activeModule) ?? modules[0];
   const ActiveIcon = active.icon;
@@ -210,11 +271,18 @@ export default function App() {
     null;
 
   function completeTask(taskId) {
+    const task = tasks.find((item) => item.id === taskId);
+    if (!task || task.done) return;
+
     setMissionState((prev) => ({
       ...prev,
-      tasks: prev.tasks.map((task) =>
-        task.id === taskId ? { ...task, done: true } : task
+      tasks: prev.tasks.map((item) =>
+        item.id === taskId ? { ...item, done: true } : item
       ),
+    }));
+
+    setXpState((prev) => ({
+      totalXp: Math.max(0, Number(prev.totalXp) || 0) + task.points,
     }));
   }
 
@@ -371,10 +439,27 @@ export default function App() {
             </p>
           </div>
 
-          <div className="score-card">
-            <p>Daily Score</p>
-            <strong>{score}</strong>
-            <span>{getStatus(score)}</span>
+          <div className="top-stat-stack">
+            <div className="score-card">
+              <p>Daily Score</p>
+              <strong>{score}</strong>
+              <span>{getStatus(score)}</span>
+            </div>
+
+            <div className="xp-card">
+              <div className="xp-card-header">
+                <Sparkles size={18} />
+                <p>Level {levelInfo.level}</p>
+              </div>
+              <strong>{levelInfo.title}</strong>
+              <span>{levelInfo.totalXp} total XP</span>
+              <div className="xp-progress-bar">
+                <div style={{ width: `${levelInfo.progressPercent}%` }} />
+              </div>
+              <small>
+                {levelInfo.currentLevelXp}/{levelInfo.nextLevelXp} XP to next level
+              </small>
+            </div>
           </div>
         </header>
 
@@ -532,7 +617,7 @@ export default function App() {
           </div>
 
           <p className="muted">
-            Modern dashboard theme active. Daily goals are locked to module logs. Completed goals: {completed}/{tasks.length}.
+            Persistent XP active. Modern dashboard theme active. Daily goals are locked to module logs. Completed goals: {completed}/{tasks.length}.
           </p>
         </section>
       </main>
