@@ -1012,3 +1012,156 @@ button {
     grid-template-columns: 1fr;
   }
 }
+.skill-tree-module {
+  margin-top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.skill-tree-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.skill-card {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.skill-card h3,
+.recent-logs h3 {
+  margin: 0;
+  text-transform: uppercase;
+  color: #fcd34d;
+}
+
+.skill-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.skill-card-header strong,
+.skill-card-header span {
+  display: block;
+}
+
+.skill-card-header strong {
+  color: #fcd34d;
+  text-transform: uppercase;
+}
+
+.skill-card-header span {
+  margin-top: 4px;
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 13px;
+}
+
+.skill-progress-bar {
+  height: 10px;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.skill-progress-bar div {
+  height: 100%;
+  background: #fcd34d;
+}
+
+.skill-card p {
+  margin: 0;
+  color: rgba(253, 230, 138, 0.8);
+  font-size: 13px;
+}
+
+.skill-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.skill-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.skill-form label span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(253, 230, 138, 0.75);
+}
+
+.skill-form input,
+.skill-form textarea,
+.skill-form select {
+  width: 100%;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fde68a;
+  padding: 11px;
+  outline: none;
+}
+
+.skill-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.skill-form input:focus,
+.skill-form textarea:focus,
+.skill-form select:focus {
+  border-color: #fcd34d;
+}
+
+.skill-log {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 14px;
+}
+
+.skill-log-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #292524;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.skill-log-header strong {
+  display: block;
+  color: #fcd34d;
+}
+
+.skill-log-header span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 13px;
+}
+
+.skill-log p {
+  margin: 8px 0 0;
+  color: #fef3c7;
+  line-height: 1.5;
+}
+
+.skill-log p span {
+  color: #fcd34d;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+@media (max-width: 850px) {
+  .skill-tree-grid,
+  .skill-form {
+    grid-template-columns: 1fr;
+  }
+}
