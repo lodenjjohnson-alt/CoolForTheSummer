@@ -1,0 +1,172 @@
+.faith-module {
+  margin-top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.faith-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.25fr) minmax(280px, 0.75fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.faith-card {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.faith-card-header {
+  border-bottom: 1px solid #292524;
+  padding-bottom: 10px;
+}
+
+.faith-card-header p {
+  margin: 0 0 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(253, 230, 138, 0.7);
+}
+
+.faith-card-header h3 {
+  margin: 0;
+  color: #fcd34d;
+  text-transform: uppercase;
+}
+
+.faith-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.faith-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.faith-form label span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(253, 230, 138, 0.75);
+}
+
+.faith-form input,
+.faith-form textarea,
+.faith-form select {
+  width: 100%;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fde68a;
+  padding: 11px;
+  outline: none;
+}
+
+.faith-form textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.faith-form input:focus,
+.faith-form textarea:focus,
+.faith-form select:focus {
+  border-color: #fcd34d;
+}
+
+.faith-virtue-list {
+  display: grid;
+  gap: 10px;
+}
+
+.faith-virtue-row {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 10px;
+}
+
+.faith-virtue-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.faith-virtue-top strong {
+  color: #fcd34d;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.faith-virtue-top span {
+  color: rgba(253, 230, 138, 0.8);
+  font-size: 12px;
+}
+
+.faith-virtue-bar {
+  height: 8px;
+  border: 1px solid #57534e;
+  background: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.faith-virtue-bar div {
+  height: 100%;
+  background: #fcd34d;
+}
+
+.faith-log-list {
+  display: grid;
+  gap: 10px;
+}
+
+.faith-log {
+  border: 1px solid #292524;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 14px;
+}
+
+.faith-log-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #292524;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.faith-log-header strong {
+  display: block;
+  color: #fcd34d;
+  text-transform: uppercase;
+}
+
+.faith-log-header span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(253, 230, 138, 0.7);
+  font-size: 13px;
+}
+
+.faith-log p {
+  margin: 8px 0 0;
+  color: #fef3c7;
+  line-height: 1.5;
+}
+
+.faith-log p span {
+  color: #fcd34d;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+@media (max-width: 950px) {
+  .faith-layout,
+  .faith-form {
+    grid-template-columns: 1fr;
+  }
+}
