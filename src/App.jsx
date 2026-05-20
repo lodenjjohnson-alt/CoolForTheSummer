@@ -1,3 +1,4 @@
+import LearningModule from "./modules/LearningModule.jsx";
 import SchoolModule from "./modules/SchoolModule.jsx";
 import HockeyModule from "./modules/HockeyModule.jsx";
 function getLocalDateString(date = new Date()) {
@@ -222,6 +223,16 @@ export default function App() {
       setTasks((prev) =>
         prev.map((task) =>
           task.id === 3 ? { ...task, done: true } : task
+        )
+      );
+    }}
+  />
+) : activeModule === "learning" ? (
+  <LearningModule
+    onSave={() => {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === 4 ? { ...task, done: true } : task
         )
       );
     }}
